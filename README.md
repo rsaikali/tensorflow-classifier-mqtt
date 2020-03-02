@@ -2,6 +2,9 @@
 
 ![PEP8](https://github.com/rsaikali/tensorflow-classifier-mqtt/workflows/PEP8/badge.svg)
 
+> First of all I'm pretty new to this Tensorflow and machine learning concepts, so my model and settings will maybe look horrible to experts as they'll maybe need future optimizations and changes.
+> But it works as it is for my use case so I share it with you here. Don't hesitate to open comments and issues on how to improve things.
+
 `tensorflow-classifier-mqtt` is a set of Python script to classify a webcam capture into labels with Tensorflow and publish results to a MQTT (message queue) broker.
 
 In my personal use case, it classifies a webcam view of my garage door, to predict if the door is `opened` or `closed`.
@@ -14,9 +17,6 @@ In my personal use case, it classifies a webcam view of my garage door, to predi
 Training part will use Tensorflow 2, but classifying part will only use Tensorflow Lite (to be embedded in a RaspberryPi).
 
 ## How to use it?
-
-> First of all I'm pretty new to this Tensorflow and machine learning things, so my model and settings will maybe need optimizations and changes.
-> But it works as it is for my small 'garage door' use case so I share it with you here. Don't hesitate to open comments and issues on how to improve things.
 
 ### Preparing your datasets
 
