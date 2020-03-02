@@ -21,8 +21,8 @@ RUN pip3 install paho-mqtt
 
 WORKDIR /opt
 
-COPY ./model/model.tflite /opt/model.tflite
-COPY ./model/model.labels /opt/model.labels
+COPY ./model/model.tflite /opt/model/model.tflite
+COPY ./model/model.labels /opt/model/model.labels
 COPY classify.py /opt/classify.py
 
 ENTRYPOINT ["python", "/opt/classify.py"]
