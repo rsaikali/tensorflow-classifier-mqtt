@@ -178,3 +178,10 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 docker buildx create --use --name build --node build --driver-opt network=host
 docker buildx build --platform linux/arm/v7 -t <your-repo>/tensorflow-classifier-mqtt --push .
 ```
+
+Docker image will embed the Tensorflow lite model and labels files.
+
+# Inspirations and sources
+
+- https://www.tensorflow.org/tutorials/keras/classification
+- https://github.com/dracoboros/Cats-Or-Dogs/blob/master/src/CatsOrDogs.ipynb
