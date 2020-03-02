@@ -2,7 +2,7 @@
 
 ![PEP8](https://github.com/rsaikali/tensorflow-classifier-mqtt/workflows/PEP8/badge.svg)
 
-> First of all I'm pretty new to this Tensorflow and machine learning concepts, so my model and settings will maybe look horrible to experts as they'll maybe need future optimizations and changes.
+> First of all I'm pretty new to this Tensorflow and machine learning concepts, so my model and settings will maybe look horrible to experts. I'm pretty sure it'll need optimizations and changes.
 > But it works as it is for my use case so I share it with you here. Don't hesitate to open comments and issues on how to improve things.
 
 `tensorflow-classifier-mqtt` is a set of Python script to classify a webcam capture into labels with Tensorflow and publish results to a MQTT (message queue) broker.
@@ -14,7 +14,7 @@ In my personal use case, it classifies a webcam view of my garage door, to predi
     <img src="https://raw.githubusercontent.com/rsaikali/tensorflow-classifier-mqtt/master/dataset/screenshots/opened.sample.jpg" width="300">
 </p>
 
-Training part will use Tensorflow 2, but classifying part will only use Tensorflow Lite (to be embedded in a RaspberryPi).
+Training part will use Tensorflow 2, but classifying part will only use Tensorflow lite (lightweight Tensorflow interpreter, to be embedded in a RaspberryPi).
 
 ## How to use it?
 
@@ -60,7 +60,7 @@ First install requirements, only Tensorflow2 is needed here:
 pip install tensorflow
 ```
 
-Then launch the traning process:
+Then launch the training process:
 
 ```sh
 python train.py
@@ -77,7 +77,7 @@ Epoch 3/5
 (...)
 ```
 
-And finaly convert the Tensorflow model to a Tensorflow Lite model:
+And finaly convert the Tensorflow model to a Tensorflow lite model:
 
 ```sh
 tflite_convert --output_file=./model/model.tflite --saved_model_dir=./model
@@ -100,7 +100,7 @@ drwxr-xr-x   4 rsaikali  staff   128B  2 mar 10:55 variables
 
 ### Classify images
 
-First install requirements, Tensorflow Lite for RaspberryPi will be used here, but you can find the correct version for your platform here: https://www.tensorflow.org/lite/guide/python
+First install requirements, Tensorflow lite for RaspberryPi will be used here, but you can find the correct version for your platform here: https://www.tensorflow.org/lite/guide/python
 
 ```sh
 pip install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_armv7l.whl
