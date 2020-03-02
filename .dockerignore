@@ -4,7 +4,6 @@
 .dockerignore
 .DS_Store
 dataset
-model
 requirements*
 train.*
 *.sh
