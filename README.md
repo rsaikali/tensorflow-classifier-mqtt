@@ -64,6 +64,17 @@ Then launch the traning process:
 
 ```sh
 python train.py
+
+################################################################################
+Training model...
+Train for 500 steps
+Epoch 1/5
+500/500 [==============================] - 111s 223ms/step - loss: 0.8497 - sparse_categorical_accuracy: 0.9520
+Epoch 2/5
+500/500 [==============================] - 102s 205ms/step - loss: 0.0192 - sparse_categorical_accuracy: 0.9964
+Epoch 3/5
+357/500 [====================>.........] - ETA: 28s - loss: 0.4557 - sparse_categorical_accuracy: 0.9486
+(...)
 ```
 
 And finnaly convert the Tensorflow model to a Tensorflow Lite model:
@@ -75,7 +86,8 @@ tflite_convert --output_file=./model/model.tflite --saved_model_dir=./model
 You should end up with `model.tflite` and `model.labels` files, that'll be used in the classification step:
 
 ```sh
-rsaikali$ ls -lah model/
+ls -lah model/
+
 total 37032
 drwxr-xr-x   7 rsaikali  staff   224B  2 mar 10:55 .
 drwxr-xr-x  15 rsaikali  staff   480B  2 mar 11:04 ..
