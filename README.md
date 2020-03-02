@@ -11,8 +11,8 @@
 In my personal use case, it classifies a webcam view of my garage door, to predict if the door is `opened` or `closed`.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/rsaikali/tensorflow-classifier-mqtt/master/dataset/screenshots/closed.sample.jpg" width="300">
-    <img src="https://raw.githubusercontent.com/rsaikali/tensorflow-classifier-mqtt/master/dataset/screenshots/opened.sample.jpg" width="300">
+    <img src="https://raw.githubusercontent.com/rsaikali/tensorflow-classifier-mqtt/master/dataset/screenshots/closed.sample.jpg" width="300" title="closed">
+    <img src="https://raw.githubusercontent.com/rsaikali/tensorflow-classifier-mqtt/master/dataset/screenshots/opened.sample.jpg" width="300" title="opened">
 </p>
 
 Training part will use Tensorflow 2, but classifying part will only use Tensorflow lite (lightweight Tensorflow interpreter, to be embedded in a RaspberryPi).
@@ -23,9 +23,7 @@ Training part will use Tensorflow 2, but classifying part will only use Tensorfl
 
 Tensorflow will need datasets to learn labels.
 
-Organized into 'labeled' directories (`closed`/`opened` in my case)
-
-`dataset` directory will need to contain all your training images, and need to be organized as the following:
+Organized into 'labeled' directories (`closed`/`opened` in my case) the `dataset` directory will need to contain all your training images, and need to be organized as the following:
 
 ```sh
 dataset/
@@ -146,7 +144,7 @@ rsaikali$ python classify.py
 2020-03-02 11:28:16,151 [tensorflow-classifier-mqtt-service]     INFO [predicted_label=opened] [score=100.0000%] [time=7.98ms] output=[7.190952e-16 1.000000e+00]
 ```
 
-Looks like `predicted_label` switched form `closed` to `opened`... just what I expected!
+Looks like `predicted_label` switched form `closed` to `opened`... as expected!
 
 ### Use as Docker container
 
