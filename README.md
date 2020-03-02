@@ -180,6 +180,8 @@ docker buildx create --use --name build --node build --driver-opt network=host
 docker buildx build --platform linux/arm/v7 -t <your-repo>/tensorflow-classifier-mqtt --push .
 ```
 
+**Note: build step will take a while to run as numpy is really long to install.**
+
 Docker image will embed the Tensorflow lite model and labels files.
 
 # Inspirations and sources
