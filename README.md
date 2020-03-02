@@ -118,12 +118,12 @@ pip install opencv-python paho-mqtt
 Then you'll need a few environment variables to setup and configure the observed webcam and the MQTT broker information:
 
 ```sh
-export WEBCAM_URL http://webcam.local:8080
-export WEBCAM_CHECK_EVERY 1
+export WEBCAM_URL=http://webcam.local:8080
+export WEBCAM_CHECK_EVERY=1
 
-export MQTT_SERVICE_HOST mosquitto.local
-export MQTT_SERVICE_PORT 1883
-export MQTT_SERVICE_TOPIC home/garage/door
+export MQTT_SERVICE_HOST=mosquitto.local
+export MQTT_SERVICE_PORT=1883
+export MQTT_SERVICE_TOPIC=home/garage/door
 ```
 
 So you can launch classification:
