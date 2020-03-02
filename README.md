@@ -2,8 +2,9 @@
 
 ![PEP8](https://github.com/rsaikali/tensorflow-classifier-mqtt/workflows/PEP8/badge.svg)
 
-> First of all I'm pretty new to this Tensorflow and machine learning concepts, so my model and settings will maybe look horrible to experts. I'm pretty sure it'll need optimizations and changes.
-> But it works as it is for my use case so I share it with you here. Don't hesitate to open comments and issues on how to improve things.
+> First of all I'm pretty new to this Tensorflow and machine learning concepts, so my Keras settings, model and layers will maybe look horrible to experts.
+
+> I'm pretty sure it'll need optimizations and changes, but it works as it is for my use case so I share it with you here. Don't hesitate to open comments and issues on how to improve things.
 
 `tensorflow-classifier-mqtt` is a set of Python script to classify a webcam capture into labels with Tensorflow and publish results to a MQTT (message queue) broker.
 
