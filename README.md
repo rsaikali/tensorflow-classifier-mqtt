@@ -7,8 +7,8 @@
 In my personal use case, it classifies a webcam view of my garage door, to predict if the door is `opened` or `closed`.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/rsaikali/mqtt-listener/master/dataset/screenshots/closed.sample.jpg" width="300">
-    <img src="https://raw.githubusercontent.com/rsaikali/mqtt-listener/master/dataset/screenshots/opened.sample.jpg" width="300">
+    <img src="https://raw.githubusercontent.com/rsaikali/tensorflow-classifier-mqtt/master/dataset/screenshots/closed.sample.jpg" width="300">
+    <img src="https://raw.githubusercontent.com/rsaikali/tensorflow-classifier-mqtt/master/dataset/screenshots/opened.sample.jpg" width="300">
 </p>
 
 Training part will use Tensorflow 2, but classifying part will only use Tensorflow Lite (to be embedded in a RaspberryPi).
