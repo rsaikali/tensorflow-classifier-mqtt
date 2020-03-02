@@ -77,13 +77,13 @@ Epoch 3/5
 (...)
 ```
 
-And finnaly convert the Tensorflow model to a Tensorflow Lite model:
+And finaly convert the Tensorflow model to a Tensorflow Lite model:
 
 ```sh
 tflite_convert --output_file=./model/model.tflite --saved_model_dir=./model
 ```
 
-You should end up with `model.tflite` and `model.labels` files, that'll be used in the classification step:
+You should end up with `model.tflite` and `model.labels` files, those will be used in the classification step:
 
 ```sh
 ls -lah model/
@@ -107,7 +107,7 @@ pip install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-c
 pip install opencv-python paho-mqtt
 ```
 
-Then you'll need a few environment variables to setup and configure the classification:
+Then you'll need a few environment variables to setup and configure the observed webcam and the MQTT broker information:
 
 ```sh
 export WEBCAM_URL http://webcam.local:8080
@@ -144,6 +144,8 @@ rsaikali$ python classify.py
 2020-03-02 11:28:15,137 [tensorflow-classifier-mqtt-service]     INFO [predicted_label=opened] [score=100.0000%] [time=9.16ms] output=[6.0946927e-16 1.0000000e+00]
 2020-03-02 11:28:16,151 [tensorflow-classifier-mqtt-service]     INFO [predicted_label=opened] [score=100.0000%] [time=7.98ms] output=[7.190952e-16 1.000000e+00]
 ```
+
+Looks like `predicted_label` switched form `closed` to `opened`... just what I expected!
 
 ### Use as Docker container
 
