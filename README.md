@@ -2,9 +2,18 @@
 
 ![PEP8](https://github.com/rsaikali/tensorflow-classifier-mqtt/workflows/PEP8/badge.svg)
 
-> First of all I'm pretty new to this Tensorflow and machine learning concepts, so my Keras settings, model and layers will maybe look horrible to experts.
+## Personal note
 
-> I'm pretty sure it'll need optimizations and changes, but it works as it is for my use case so I share it with you here. Don't hesitate to open comments and issues on how to improve things.
+First of all I'm pretty new to this Tensorflow and machine learning concepts, so my Keras settings, model and layers will maybe look horrible to experts.
+
+It will obviously need optimizations and changes, but it works as it is for my use case so I decided to share it with you here. Don't hesitate to open comments and issues on how to improve things.
+
+## Inspirations and sources
+
+- https://www.tensorflow.org/tutorials/keras/classification
+- https://github.com/dracoboros/Cats-Or-Dogs/blob/master/src/CatsOrDogs.ipynb
+
+## Presentation
 
 `tensorflow-classifier-mqtt` is a set of Python script to classify a webcam capture into labels with Tensorflow and publish results to a MQTT (message queue) broker.
 
@@ -183,8 +192,3 @@ docker buildx build --platform linux/arm/v7 -t <your-repo>/tensorflow-classifier
 **Note: build step will take a while to run as numpy is really long to install.**
 
 Docker image will embed the Tensorflow lite model and labels files.
-
-# Inspirations and sources
-
-- https://www.tensorflow.org/tutorials/keras/classification
-- https://github.com/dracoboros/Cats-Or-Dogs/blob/master/src/CatsOrDogs.ipynb
