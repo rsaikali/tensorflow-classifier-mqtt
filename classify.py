@@ -78,8 +78,16 @@ try:
 
             msgs = [
                 {
-                    'topic': f"{MQTT_SERVICE_TOPIC}/state",
+                    'topic': f"{MQTT_SERVICE_TOPIC}/state_display",
                     'payload': state
+                },
+                {
+                    'topic': f"{MQTT_SERVICE_TOPIC}/state_value",
+                    'payload': str(np.argmax(output))
+                },
+                {
+                    'topic': f"{MQTT_SERVICE_TOPIC}/state_score",
+                    'payload': str(score_pct)
                 },
                 {
                     'topic': f"{MQTT_SERVICE_TOPIC}/score",
@@ -88,7 +96,10 @@ try:
             ]
 
             # Publish door state and score on given MQTT broker
-            publish.multiple(msgs, hostname=MQTT_SERVICE_HOST, port=MQTT_SERVICE_PORT, client_id=MQTT_CLIENT_ID)
+            try:
+                publish.multiple(msgs, hostname=MQTT_SERVICE_HOST, port=MQTT_SERVICE_PORT, client_id=MQTT_CLIENT_ID)
+            except Exception:
+                logger.error("An error occured while trying to publish:", exc_info=True)
 
         time.sleep(WEBCAM_CHECK_EVERY)
 
