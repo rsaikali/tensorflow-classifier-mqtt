@@ -41,7 +41,11 @@ try:
     logger.info(f"Opening model: %s" % model_path)
     interpreter = Interpreter(model_path)
     interpreter.allocate_tensors()
-    _, height, width, _ = interpreter.get_input_details()[0]['shape']
+
+    input_details = interpreter.get_input_details()[0]
+    output_details = interpreter.get_output_details()[0]
+
+    _, height, width, _ = input_details['shape']
 
     logger.info(f"Opening video: %s" % WEBCAM_URL)
     capture = cv2.VideoCapture(WEBCAM_URL)
@@ -65,35 +69,19 @@ try:
         # img = np.float32(img)
         img = (np.float32(img) - 127.5) / 127.5
 
-        interpreter.set_tensor(interpreter.get_input_details()[0]['index'], img)
+        interpreter.set_tensor(input_details['index'], img)
         interpreter.invoke()
-        output = np.squeeze(interpreter.get_tensor(interpreter.get_output_details()[0]['index']))
+        output = np.squeeze(interpreter.get_tensor(output_details['index']))
+
         score, state = output[np.argmax(output)], labels[np.argmax(output)]
         score_pct = round(score * 100, 4)
 
-        elapsed_ms = (time.time() - start_time) * 1000
-        logger.info(f"[predicted_label={state}] [score=%.4f%%] [time=%.2fms] output={output}" % (score_pct, elapsed_ms))
+        logger.info(f"[predicted_label={state}] [score=%.4f%%] [time=%.2fms] output={output}" % (score_pct, (time.time() - start_time) * 1000))
 
         if MQTT_SERVICE_HOST is not None:
 
-            msgs = [
-                {
-                    'topic': f"{MQTT_SERVICE_TOPIC}/state_display",
-                    'payload': state
-                },
-                {
-                    'topic': f"{MQTT_SERVICE_TOPIC}/state_value",
-                    'payload': str(np.argmax(output))
-                },
-                {
-                    'topic': f"{MQTT_SERVICE_TOPIC}/state_score",
-                    'payload': str(score_pct)
-                },
-                {
-                    'topic': f"{MQTT_SERVICE_TOPIC}/score",
-                    'payload': str(score_pct)
-                }
-            ]
+            msgs = [(f"{MQTT_SERVICE_TOPIC}/state", state),
+                    (f"{MQTT_SERVICE_TOPIC}/score", str(score_pct))]
 
             # Publish door state and score on given MQTT broker
             try:
