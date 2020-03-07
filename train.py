@@ -1,99 +1,109 @@
 #
-# Inspired from: https://github.com/dracoboros/Cats-Or-Dogs/blob/master/src/CatsOrDogs.ipynb
+# Inspired from:
+# https://github.com/dracoboros/Cats-Or-Dogs/blob/master/src/CatsOrDogs.ipynb
+# https://www.dlology.com/blog/how-to-choose-last-layer-activation-and-loss-function/
+# https://github.com/fchollet/deep-learning-with-python-notebooks/blob/master/5.2-using-convnets-with-small-datasets.ipynb
 #
+import datetime
 import os
-from pathlib import Path
 
 import tensorflow as tf
 
+
 IMAGE_SIZE = 192
-BATCH_SIZE = 128
-EPOCHS = 5
-STEPS_PER_EPOCHS = 500
+BATCH_SIZE = 32
+EPOCHS = 10
 
-TRAIN_PATH = os.path.abspath('./dataset/train/')
-VALIDATION_PATH = os.path.abspath('./dataset/validation/')
-MODEL_PATH = os.path.abspath('./model')
-LABEL_PATH = os.path.abspath('./model/model.labels')
+DATASET_PATH = os.path.abspath("./dataset")
+MODEL_PATH = os.path.abspath("./model")
+LOG_TS = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+TRAIN_PATH = os.path.abspath(f"{DATASET_PATH}/train/")
+VALIDATION_PATH = os.path.abspath(f"{DATASET_PATH}/validation/")
+
 CLASSES = sorted(os.listdir(TRAIN_PATH))
-
 
 ################################################################################
 # Data preparation
 print("#" * 80)
 print("Preparing datasets...")
 
+train_datagenerator = tf.keras.preprocessing.image.ImageDataGenerator(
+    rescale=1. / 255)
+train_generator = train_datagenerator.flow_from_directory(
+    TRAIN_PATH,
+    target_size=(IMAGE_SIZE, IMAGE_SIZE),
+    batch_size=BATCH_SIZE,
+    class_mode='categorical')
 
-def preprocess_image(path):
-    image = tf.io.read_file(path)
-    image = tf.image.decode_jpeg(image, channels=3)
-    image = tf.image.resize(image, (IMAGE_SIZE, IMAGE_SIZE))
-    image = tf.image.rgb_to_grayscale(image)
-    image /= 255.0
-    return image
+validation_datagenerator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
+validation_generator = validation_datagenerator.flow_from_directory(
+    VALIDATION_PATH,
+    target_size=(IMAGE_SIZE, IMAGE_SIZE),
+    batch_size=BATCH_SIZE,
+    class_mode='categorical')
 
-
-def load_dataset(path, shuffle=True):
-
-    data_paths = []
-    data_labels = []
-
-    for item in Path(path).glob('**/*'):
-        if item.is_file() and str(item).endswith('.jpg'):
-            data_paths.append(str(item))
-            data_labels.append(CLASSES.index(os.path.basename(os.path.dirname(str(item)))))
-
-    label_ds = tf.data.Dataset.from_tensor_slices(tf.cast(data_labels, tf.int64))
-
-    path_ds = tf.data.Dataset.from_tensor_slices(data_paths)
-    image_ds = path_ds.map(preprocess_image, num_parallel_calls=BATCH_SIZE)
-
-    ds = tf.data.Dataset.zip((image_ds, label_ds))
-
-    if shuffle:
-        ds = ds.shuffle(buffer_size=BATCH_SIZE).repeat()
-
-    ds = ds.batch(BATCH_SIZE)
-
-    return ds
-
-
-train_ds = load_dataset(TRAIN_PATH, shuffle=True)
-validation_ds = load_dataset(VALIDATION_PATH, shuffle=False)
+for data_batch, labels_batch in train_generator:
+    print('Data batch shape:', data_batch.shape)
+    print('Labels batch shape:', labels_batch.shape)
+    break
 
 ################################################################################
 # Model preparation
 print("#" * 80)
 print("Preparing model...")
 tf.keras.backend.clear_session()
-model = tf.keras.Sequential([
-    tf.keras.layers.Flatten(input_shape=(IMAGE_SIZE, IMAGE_SIZE, 1)),
-    tf.keras.layers.Dense(units=128, activation=tf.nn.leaky_relu),
-    tf.keras.layers.Dense(len(CLASSES), activation='softmax')
-])
+model = tf.keras.Sequential()
+model.add(tf.keras.layers.Conv2D(32, (3, 3), padding='same', input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3)))
+model.add(tf.keras.layers.Activation('relu'))
+model.add(tf.keras.layers.Conv2D(32, (3, 3)))
+model.add(tf.keras.layers.Activation('relu'))
+model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+model.add(tf.keras.layers.Dropout(0.25))
+
+model.add(tf.keras.layers.Conv2D(64, (3, 3), padding='same'))
+model.add(tf.keras.layers.Activation('relu'))
+model.add(tf.keras.layers.Conv2D(64, (3, 3)))
+model.add(tf.keras.layers.Activation('relu'))
+model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+model.add(tf.keras.layers.Dropout(0.25))
+
+model.add(tf.keras.layers.Flatten())
+model.add(tf.keras.layers.Dense(512))
+model.add(tf.keras.layers.Activation('relu'))
+model.add(tf.keras.layers.Dropout(0.5))
+model.add(tf.keras.layers.Dense(len(CLASSES), activation='softmax'))
+
+################################################################################
+# Model summary
+print("#" * 80)
+print("Model summary...")
+model.summary()
 
 ################################################################################
 # Model compile
 print("#" * 80)
 print("Compiling model...")
-model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-              metrics=[tf.metrics.SparseCategoricalAccuracy()])
+model.compile(optimizer=tf.keras.optimizers.RMSprop(lr=1e-4),
+              loss='categorical_crossentropy',
+              metrics=['acc'])
 
 ################################################################################
-# Model train
+# Model train + tensorboard logs
+
 print("#" * 80)
 print("Training model...")
-model.fit(train_ds, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCHS)
-
-################################################################################
-# Model train
-print("#" * 80)
-print("Evalutate model...")
-model.evaluate(validation_ds)
+model.fit(train_generator,
+          epochs=EPOCHS,
+          steps_per_epoch=int(train_generator.samples / train_generator.batch_size),
+          validation_data=validation_generator,
+          validation_steps=int(validation_generator.samples / validation_generator.batch_size),
+          callbacks=[tf.keras.callbacks.TensorBoard(log_dir="logs/fit/" + LOG_TS,
+                                                    profile_batch=0, histogram_freq=0)])
 
 ################################################################################
 # Labels save
+LABEL_PATH = os.path.abspath(f'{MODEL_PATH}/model.labels')
 print("#" * 80)
 print("Saving labels [%s] to '%s'..." % ("|".join(CLASSES), LABEL_PATH))
 with open(LABEL_PATH, 'w') as lf:

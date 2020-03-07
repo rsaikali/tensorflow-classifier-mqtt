@@ -60,14 +60,8 @@ try:
         image = capture.read()[1]
         # Resize imput image
         img = cv2.resize(image, (height, width), interpolation=cv2.INTER_CUBIC)
-        # Grayscale convert
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = np.expand_dims(img, axis=0)
-        img = np.expand_dims(img, axis=0)
-        # Switch image shape
-        img = np.transpose(img, (0, 2, 3, 1))
-        # img = np.float32(img)
-        img = (np.float32(img) - 127.5) / 127.5
+        img = np.float32(img)
 
         interpreter.set_tensor(input_details['index'], img)
         interpreter.invoke()
