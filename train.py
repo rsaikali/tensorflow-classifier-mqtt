@@ -11,8 +11,8 @@ import tensorflow as tf
 
 
 IMAGE_SIZE = 192
-BATCH_SIZE = 32
-EPOCHS = 10
+BATCH_SIZE = 2
+EPOCHS = 100
 
 DATASET_PATH = os.path.abspath("./dataset")
 MODEL_PATH = os.path.abspath("./model")
@@ -28,20 +28,19 @@ CLASSES = sorted(os.listdir(TRAIN_PATH))
 print("#" * 80)
 print("Preparing datasets...")
 
-train_datagenerator = tf.keras.preprocessing.image.ImageDataGenerator(
-    rescale=1. / 255)
+train_datagenerator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
 train_generator = train_datagenerator.flow_from_directory(
     TRAIN_PATH,
     target_size=(IMAGE_SIZE, IMAGE_SIZE),
     batch_size=BATCH_SIZE,
-    class_mode='categorical')
+    class_mode='binary')
 
 validation_datagenerator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
 validation_generator = validation_datagenerator.flow_from_directory(
     VALIDATION_PATH,
     target_size=(IMAGE_SIZE, IMAGE_SIZE),
     batch_size=BATCH_SIZE,
-    class_mode='categorical')
+    class_mode='binary')
 
 for data_batch, labels_batch in train_generator:
     print('Data batch shape:', data_batch.shape)
@@ -53,26 +52,19 @@ for data_batch, labels_batch in train_generator:
 print("#" * 80)
 print("Preparing model...")
 tf.keras.backend.clear_session()
+
 model = tf.keras.Sequential()
-model.add(tf.keras.layers.Conv2D(32, (3, 3), padding='same', input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3)))
-model.add(tf.keras.layers.Activation('relu'))
-model.add(tf.keras.layers.Conv2D(32, (3, 3)))
-model.add(tf.keras.layers.Activation('relu'))
-model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-model.add(tf.keras.layers.Dropout(0.25))
-
-model.add(tf.keras.layers.Conv2D(64, (3, 3), padding='same'))
-model.add(tf.keras.layers.Activation('relu'))
-model.add(tf.keras.layers.Conv2D(64, (3, 3)))
-model.add(tf.keras.layers.Activation('relu'))
-model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-model.add(tf.keras.layers.Dropout(0.25))
-
+model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3)))
+model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+model.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(tf.keras.layers.MaxPooling2D((2, 2)))
 model.add(tf.keras.layers.Flatten())
-model.add(tf.keras.layers.Dense(512))
-model.add(tf.keras.layers.Activation('relu'))
-model.add(tf.keras.layers.Dropout(0.5))
-model.add(tf.keras.layers.Dense(len(CLASSES), activation='softmax'))
+model.add(tf.keras.layers.Dense(512, activation='relu'))
+model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
 
 ################################################################################
 # Model summary
@@ -85,7 +77,7 @@ model.summary()
 print("#" * 80)
 print("Compiling model...")
 model.compile(optimizer=tf.keras.optimizers.RMSprop(lr=1e-4),
-              loss='categorical_crossentropy',
+              loss='binary_crossentropy',
               metrics=['acc'])
 
 ################################################################################

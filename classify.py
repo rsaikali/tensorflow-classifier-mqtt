@@ -67,15 +67,13 @@ try:
         interpreter.invoke()
         output = np.squeeze(interpreter.get_tensor(output_details['index']))
 
-        score, state = output[np.argmax(output)], labels[np.argmax(output)]
-        score_pct = round(score * 100, 4)
-
-        logger.info(f"[predicted_label={state}] [score=%.4f%%] [time=%.2fms] output={output}" % (score_pct, (time.time() - start_time) * 1000))
+        score, state = float(output), labels[int(round(float(output), 0))]
+        logger.info(f"[predicted_label={state}] [time=%.2fms] [output={output}]" % ((time.time() - start_time) * 1000))
 
         if MQTT_SERVICE_HOST is not None:
 
             msgs = [(f"{MQTT_SERVICE_TOPIC}/state", state),
-                    (f"{MQTT_SERVICE_TOPIC}/score", str(score_pct))]
+                    (f"{MQTT_SERVICE_TOPIC}/score", str(score))]
 
             # Publish door state and score on given MQTT broker
             try:
