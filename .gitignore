@@ -3,4 +3,4 @@
 dataset/train/**/*.jpg
 dataset/validation/**/*.jpg
 model
-build.sh
+logs
